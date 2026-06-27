@@ -34,8 +34,8 @@
   </rect>
 
   <!-- Wordmark -->
-  <text x="60" y="92" font-family="Helvetica, Arial, sans-serif" font-size="46" font-weight="700" fill="#F4F1EA" letter-spacing="-1">Trade<tspan fill="#3DDC84">Easy</tspan></text>
-  <text x="62" y="122" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#94A3B8" letter-spacing="0.5">Regime-aware quant intelligence for Indian retail investors</text>
+  <text x="60" y="92" font-family="Helvetica, Arial, sans-serif" font-size="46" font-weight="700" fill="#F4F1EA" letter-spacing="-1">Invest<tspan fill="#3DDC84">Easy</tspan></text>
+  <text x="62" y="122" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#94A3B8" letter-spacing="0.5">Regime-aware quant intelligence for retail investors</text>
 
   <!-- ticking metric chips -->
   <g font-family="'SF Mono', Consolas, monospace" font-size="13" fill="#94A3B8">
