@@ -262,7 +262,8 @@ class KANAlphaModel:
     def predict(self, X: pd.DataFrame) -> np.ndarray:
         if self.model is None:
             raise RuntimeError("KAN not trained")
-        X_arr = self.scaler.transform(X[self.feature_names].fillna(0).values).astype(np.float32)
+        X_aligned = X.reindex(columns=self.feature_names, fill_value=0.0)
+        X_arr = self.scaler.transform(X_aligned.fillna(0).values).astype(np.float32)
         tensor = torch.tensor(X_arr).to(DEVICE)
         self.model.eval()
         return self.model(tensor).cpu().numpy()

@@ -1,0 +1,19 @@
+# Node
+node_modules/
+frontend/dist/
+*.log
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.env
+.env
+
+# Ide / Agent
+.system_generated/
+.gemini/
+brain/
+scratch/
+
+# Large binaries (optional, keep saved_models if small)
