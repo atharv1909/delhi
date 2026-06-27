@@ -262,7 +262,7 @@ async def _run_real_pipeline(job_id: str, body: AnalyzeRequest):
                 "kan": kan_alphas.get(ticker, 0.0),
                 "lgbm": lgbm_alphas.get(ticker, 0.0),
                 "patchtst": patchtst_alphas.get(ticker, 0.0),
-                "il": il_alphas.get(ticker, 0.0),
+                "il": 0.0,  # Excluded per user validation rule (honest IC < 0.05)
             }
             final_alphas[ticker] = combine_expert_alphas(expert_a, gate_weights, gate_confidence)
 

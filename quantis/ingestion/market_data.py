@@ -199,15 +199,28 @@ def build_fii_zscore(fii_series: pd.Series, window: int = 20) -> pd.Series:
 
 
 def get_current_prices(tickers: list[str]) -> dict[str, float]:
-    """Fast batch fetch of last-trade prices using yfinance fast_info."""
+    """Fast batch fetch of last-trade prices using yfinance fast_info with history fallback."""
     prices: dict[str, float] = {}
     for ticker in tickers:
+        p = 0.0
         try:
-            fi = yf.Ticker(ticker).fast_info
-            prices[ticker] = float(fi.get("last_price", fi.get("previous_close", 0.0)))
+            t = yf.Ticker(ticker)
+            fi = t.fast_info
+            p = float(fi.get("last_price", fi.get("previous_close", 0.0)))
+            if p <= 0.0:
+                h = t.history(period="5d")
+                if not h.empty:
+                    p = float(h["Close"].iloc[-1])
         except Exception:
-            prices[ticker] = 0.0
+            try:
+                h = yf.Ticker(ticker).history(period="5d")
+                if not h.empty:
+                    p = float(h["Close"].iloc[-1])
+            except Exception:
+                p = 0.0
+        prices[ticker] = p
     return prices
+
 
 
 def get_stock_info(tickers: list[str]) -> list[dict]:

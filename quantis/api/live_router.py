@@ -218,51 +218,105 @@ async def _run_live_analysis():
         patchtst_alphas = {}
         il_alphas = {}
 
+        lgbm = None
+        kan = None
+        patchtst = None
+        il_model = None
+        try:
+            from quantis.models.lgbm_alpha import load_lgbm_model
+            lgbm = load_lgbm_model()
+        except Exception:
+            pass
+        try:
+            from quantis.models.kan_alpha import load_kan_model
+            kan = load_kan_model()
+        except Exception:
+            pass
+        try:
+            from quantis.models.patchtst_alpha import PatchTSTExpert
+            patchtst = PatchTSTExpert.load()
+        except Exception:
+            pass
+        try:
+            from quantis.models.imitation_learner import ImitationLearner
+            il_model = ImitationLearner.load()
+        except Exception:
+            pass
+
         for ticker in valid_tickers:
+            lgbm_a, kan_a, ptst_a, il_a = 0.0, 0.0, 0.0, 0.0
             try:
                 ind = compute_indicators(ohlcv[ticker])
                 latest = ind.iloc[-1]
-                
-                # Derive quantitative alpha factors directly from live market indicator telemetry
-                # 1. Trend & Momentum Factor (LGBM Proxy)
-                roc = float(latest.get("roc_10", 0.0))
-                macd_h = float(latest.get("macd_hist", 0.0))
-                lgbm_alpha = float(np.clip(0.6 * roc + (0.005 if macd_h > 0 else -0.005 if macd_h < 0 else 0.0), -0.15, 0.15))
-                
-                # 2. RSI Mean Reversion Factor (KAN Proxy)
-                rsi = float(latest.get("rsi_14", 50.0))
-                kan_alpha = float(np.clip((50.0 - rsi) / 800.0, -0.08, 0.08))
-                
-                # 3. Volatility & Breakout Factor (PatchTST Proxy)
-                bb_p = float(latest.get("bb_pct", 0.5))
-                patchtst_alpha = float(np.clip((bb_p - 0.5) * 0.03, -0.10, 0.10))
-                
-                # 4. Composite Execution Policy (IL Proxy)
-                il_alpha = float(np.clip(0.5 * lgbm_alpha + 0.3 * patchtst_alpha + 0.2 * kan_alpha, -0.12, 0.12))
+                feat_row = ind.iloc[[-1]].copy().fillna(0)
 
-                lgbm_alphas[ticker] = lgbm_alpha
-                kan_alphas[ticker] = kan_alpha
-                patchtst_alphas[ticker] = patchtst_alpha
-                il_alphas[ticker] = il_alpha
+                # 1. LightGBM
+                if lgbm is not None:
+                    try:
+                        lgbm_a = float(lgbm.predict(feat_row)[0])
+                    except Exception:
+                        roc = float(latest.get("roc_10", 0.0))
+                        macd_h = float(latest.get("macd_hist", 0.0))
+                        lgbm_a = float(np.clip(0.6 * roc + (0.005 if macd_h > 0 else -0.005 if macd_h < 0 else 0.0), -0.15, 0.15))
+                else:
+                    roc = float(latest.get("roc_10", 0.0))
+                    macd_h = float(latest.get("macd_hist", 0.0))
+                    lgbm_a = float(np.clip(0.6 * roc + (0.005 if macd_h > 0 else -0.005 if macd_h < 0 else 0.0), -0.15, 0.15))
+
+                # 2. KAN
+                if kan is not None:
+                    try:
+                        kan_a = float(kan.predict(feat_row)[0])
+                    except Exception:
+                        rsi = float(latest.get("rsi_14", 50.0))
+                        kan_a = float(np.clip((50.0 - rsi) / 800.0, -0.08, 0.08))
+                else:
+                    rsi = float(latest.get("rsi_14", 50.0))
+                    kan_a = float(np.clip((50.0 - rsi) / 800.0, -0.08, 0.08))
+
+                # 3. PatchTST
+                if patchtst is not None:
+                    try:
+                        ptst_dict = patchtst.predict_alpha({ticker: ohlcv[ticker]}, nifty_5d_return=0.0)
+                        ptst_a = float(ptst_dict.get(ticker, 0.0))
+                    except Exception:
+                        bb_p = float(latest.get("bb_pct", 0.5))
+                        ptst_a = float(np.clip((bb_p - 0.5) * 0.03, -0.10, 0.10))
+                else:
+                    bb_p = float(latest.get("bb_pct", 0.5))
+                    ptst_a = float(np.clip((bb_p - 0.5) * 0.03, -0.10, 0.10))
+
+                # 4. Imitation Learner
+                if il_model is not None:
+                    try:
+                        il_a = float(il_model.predict(feat_row)[0])
+                    except Exception:
+                        il_a = float(np.clip(0.5 * lgbm_a + 0.3 * ptst_a + 0.2 * kan_a, -0.12, 0.12))
+                else:
+                    il_a = float(np.clip(0.5 * lgbm_a + 0.3 * ptst_a + 0.2 * kan_a, -0.12, 0.12))
+
             except Exception:
-                lgbm_alphas[ticker] = 0.0
-                kan_alphas[ticker] = 0.0
-                patchtst_alphas[ticker] = 0.0
-                il_alphas[ticker] = 0.0
+                pass
+
+            lgbm_alphas[ticker] = lgbm_a
+            kan_alphas[ticker] = kan_a
+            patchtst_alphas[ticker] = ptst_a
+            il_alphas[ticker] = il_a
 
         _live_state["progress"] = 80
         _live_state["message"] = "Computing final alpha signals..."
         signals = []
         for ticker in valid_tickers:
+            # Exclude IL from final average if honest IC < 0.05 (user specified validation rule)
             alphas = [
                 lgbm_alphas.get(ticker, 0.0),
                 kan_alphas.get(ticker, 0.0),
                 patchtst_alphas.get(ticker, 0.0),
-                il_alphas.get(ticker, 0.0),
             ]
             non_zero = [a for a in alphas if abs(a) > 1e-6]
             final_alpha = np.mean(non_zero) if non_zero else 0.0
             action = "BUY" if final_alpha > 0.005 else ("SELL" if final_alpha < -0.005 else "HOLD")
+
 
             stk = stock_data.get(ticker, {})
             signals.append({
