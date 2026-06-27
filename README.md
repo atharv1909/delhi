@@ -69,7 +69,7 @@ InvestEasy is a quant intelligence platform that converts natural-language inves
 - If accuracy degrades severely, new trades are paused until reliability is restored
 
 <div align="center">
-<img src="./assets/confidence-gate.svg" width="100%" alt="TradeEasy monitoring its own predictive accuracy and pausing when it drifts" />
+<img src="./assets/confidence-gate.svg" width="100%" alt="InvestEasy monitoring its own predictive accuracy and pausing when it drifts" />
 </div>
 
 **5. Portfolio construction**
@@ -105,5 +105,5 @@ InvestEasy is a quant intelligence platform that converts natural-language inves
 ## Disclaimer
 
 <div align="center">
-<sub>TradeEasy is a research and education-oriented project. It does not constitute investment advice. All figures shown in this document are illustrative.</sub>
+<sub>InvestEasy is a research and education-oriented project. It does not constitute investment advice. All figures shown in this document are illustrative.</sub>
 </div>
