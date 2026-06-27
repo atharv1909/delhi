@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="" width="100%" alt="InvestEasy" />
+<img src="./assets/hero-banner.svg" width="100%" alt="InvestEasy" />
 
 <br/>
 
