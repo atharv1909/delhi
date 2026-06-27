@@ -1,0 +1,106 @@
+<svg width="1200" height="340" viewBox="0 0 1200 340" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0B1120"/>
+      <stop offset="100%" stop-color="#111A2E"/>
+    </linearGradient>
+    <linearGradient id="lineGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#D4A843"/>
+      <stop offset="55%" stop-color="#3DDC84"/>
+      <stop offset="100%" stop-color="#3DDC84"/>
+    </linearGradient>
+    <linearGradient id="fillGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#3DDC84" stop-opacity="0.25"/>
+      <stop offset="100%" stop-color="#3DDC84" stop-opacity="0"/>
+    </linearGradient>
+    <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#1C2942" stroke-width="1"/>
+    </pattern>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="340" fill="url(#bgGrad)"/>
+  <rect width="1200" height="340" fill="url(#grid)" opacity="0.5"/>
+
+  <!-- subtle scanline -->
+  <rect width="1200" height="2" y="0" fill="#3DDC84" opacity="0.04">
+    <animate attributeName="y" values="0;340;0" dur="6s" repeatCount="indefinite"/>
+  </rect>
+
+  <!-- Wordmark -->
+  <text x="60" y="92" font-family="Helvetica, Arial, sans-serif" font-size="46" font-weight="700" fill="#F4F1EA" letter-spacing="-1">Trade<tspan fill="#3DDC84">Easy</tspan></text>
+  <text x="62" y="122" font-family="Helvetica, Arial, sans-serif" font-size="15" fill="#94A3B8" letter-spacing="0.5">Regime-aware quant intelligence for Indian retail investors</text>
+
+  <!-- ticking metric chips -->
+  <g font-family="'SF Mono', Consolas, monospace" font-size="13" fill="#94A3B8">
+    <text x="62" y="160">NIFTY 50</text>
+    <text x="62" y="180" fill="#3DDC84" font-size="18" font-weight="600">▲ 0.84%</text>
+
+    <text x="220" y="160">PORTFOLIO α</text>
+    <text x="220" y="180" fill="#D4A843" font-size="18" font-weight="600">+2.10%</text>
+
+    <text x="380" y="160">REGIME</text>
+    <text x="380" y="180" fill="#3DDC84" font-size="16" font-weight="600">BULL TRENDING</text>
+  </g>
+
+  <!-- live portfolio value ticker -->
+  <g font-family="'SF Mono', Consolas, monospace">
+    <text x="62" y="225" font-size="13" fill="#94A3B8" letter-spacing="1">SIMULATED PORTFOLIO VALUE</text>
+    <text x="62" y="258" font-size="32" font-weight="700" fill="#F4F1EA">
+      ₹<tspan id="tickval">5,18,420</tspan>
+      <animate attributeName="opacity" values="1;0.7;1" dur="1.6s" repeatCount="indefinite"/>
+    </text>
+  </g>
+
+  <!-- Equity curve chart, right half -->
+  <g transform="translate(620, 40)">
+    <!-- axis baseline -->
+    <line x1="0" y1="240" x2="540" y2="240" stroke="#1C2942" stroke-width="1"/>
+
+    <!-- area fill under curve -->
+    <path d="M0,200 C60,190 90,150 140,160 C190,170 210,230 260,235 C310,238 340,120 400,90 C450,65 500,40 540,30 L540,240 L0,240 Z"
+          fill="url(#fillGrad)">
+      <animate attributeName="opacity" values="0;1" dur="1.8s" fill="freeze"/>
+    </path>
+
+    <!-- static fallback, always visible -->
+    <path d="M0,200 C60,190 90,150 140,160 C190,170 210,230 260,235 C310,238 340,120 400,90 C450,65 500,40 540,30"
+          fill="none" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" opacity="0.85"/>
+
+    <!-- the equity line itself, drawn on (layers over static fallback once animation runs) -->
+    <path id="equityLine" d="M0,200 C60,190 90,150 140,160 C190,170 210,230 260,235 C310,238 340,120 400,90 C450,65 500,40 540,30"
+          fill="none" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round"
+          filter="url(#glow)"
+          stroke-dasharray="900" stroke-dashoffset="900">
+      <animate attributeName="stroke-dashoffset" values="900;0" dur="2.4s" fill="freeze" calcMode="spline" keySplines="0.25 0.1 0.25 1"/>
+    </path>
+
+    <!-- regime dip marker -->
+    <circle cx="260" cy="235" r="4" fill="#E5484D"/>
+    <text x="260" y="262" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#E5484D" text-anchor="middle">
+      regime shift detected
+    </text>
+
+    <!-- recovery marker -->
+    <circle cx="400" cy="90" r="4" fill="#3DDC84"/>
+
+    <!-- traveling dot along the line, ambient loop after draw completes -->
+    <circle r="5" fill="#F4F1EA" filter="url(#glow)" opacity="0">
+      <animate attributeName="opacity" values="0;1" begin="2.4s" dur="0.3s" fill="freeze"/>
+      <animateMotion dur="3.5s" begin="2.4s" repeatCount="indefinite" rotate="auto">
+        <mpath href="#equityLine"/>
+      </animateMotion>
+    </circle>
+
+    <text x="540" y="20" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#3DDC84" text-anchor="end" font-weight="600">+18.6% YTD</text>
+  </g>
+
+  <!-- bottom hairline -->
+  <line x1="0" y1="339" x2="1200" y2="339" stroke="#1C2942" stroke-width="1"/>
+</svg>

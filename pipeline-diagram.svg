@@ -1,0 +1,87 @@
+<svg width="1200" height="220" viewBox="0 0 1200 220" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="nodeGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#16213A"/>
+      <stop offset="100%" stop-color="#111A2E"/>
+    </linearGradient>
+    <filter id="softGlow">
+      <feGaussianBlur stdDeviation="4" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1200" height="220" fill="#0B1120"/>
+
+  <!-- connecting path the pulse travels along -->
+  <path id="flowPath" d="M120,110 L320,110 L320,110 L520,110 L520,110 L720,110 L720,110 L920,110"
+        stroke="#1C2942" stroke-width="2" fill="none"/>
+
+  <!-- traveling pulse -->
+  <circle r="5" fill="#3DDC84" filter="url(#softGlow)">
+    <animateMotion dur="4s" repeatCount="indefinite">
+      <mpath href="#flowPath"/>
+    </animateMotion>
+    <animate attributeName="opacity" values="1;1;0" dur="4s" repeatCount="indefinite"/>
+  </circle>
+  <circle r="5" fill="#D4A843" filter="url(#softGlow)" opacity="0">
+    <animateMotion dur="4s" begin="2s" repeatCount="indefinite">
+      <mpath href="#flowPath"/>
+    </animateMotion>
+    <animate attributeName="opacity" values="0;1;1;0" dur="4s" begin="2s" repeatCount="indefinite"/>
+  </circle>
+
+  <!-- Node template: 5 stages -->
+  <!-- Stage 1 -->
+  <g transform="translate(40,60)">
+    <rect width="160" height="100" rx="10" fill="url(#nodeGrad)" stroke="#243150" stroke-width="1.5"/>
+    <text x="80" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#3DDC84" font-weight="700" letter-spacing="1">01</text>
+    <text x="80" y="56" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#F4F1EA" font-weight="600">Understand</text>
+    <text x="80" y="74" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8">your goal in</text>
+    <text x="80" y="88" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8">plain English</text>
+  </g>
+
+  <!-- Stage 2 -->
+  <g transform="translate(240,60)">
+    <rect width="160" height="100" rx="10" fill="url(#nodeGrad)" stroke="#243150" stroke-width="1.5"/>
+    <text x="80" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#3DDC84" font-weight="700" letter-spacing="1">02</text>
+    <text x="80" y="56" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#F4F1EA" font-weight="600">Read the</text>
+    <text x="80" y="74" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8">market &amp;</text>
+    <text x="80" y="88" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8">detect regime</text>
+  </g>
+
+  <!-- Stage 3 -->
+  <g transform="translate(440,60)">
+    <rect width="160" height="100" rx="10" fill="url(#nodeGrad)" stroke="#243150" stroke-width="1.5"/>
+    <text x="80" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#D4A843" font-weight="700" letter-spacing="1">03</text>
+    <text x="80" y="56" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#F4F1EA" font-weight="600">Forecast with</text>
+    <text x="80" y="74" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8">multiple expert</text>
+    <text x="80" y="88" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8">models</text>
+  </g>
+
+  <!-- Stage 4 -->
+  <g transform="translate(640,60)">
+    <rect width="160" height="100" rx="10" fill="url(#nodeGrad)" stroke="#243150" stroke-width="1.5"/>
+    <text x="80" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#D4A843" font-weight="700" letter-spacing="1">04</text>
+    <text x="80" y="56" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#F4F1EA" font-weight="600">Build &amp; size</text>
+    <text x="80" y="74" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8">the optimal</text>
+    <text x="80" y="88" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8">portfolio</text>
+  </g>
+
+  <!-- Stage 5 -->
+  <g transform="translate(840,60)">
+    <rect width="160" height="100" rx="10" fill="url(#nodeGrad)" stroke="#3DDC84" stroke-width="1.5"/>
+    <text x="80" y="32" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="12" fill="#3DDC84" font-weight="700" letter-spacing="1">05</text>
+    <text x="80" y="56" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="14" fill="#F4F1EA" font-weight="600">Watch it live</text>
+    <text x="80" y="74" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8">on the</text>
+    <text x="80" y="88" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8">dashboard</text>
+  </g>
+
+  <!-- small node markers along the line -->
+  <circle cx="120" cy="110" r="4" fill="#3DDC84"/>
+  <circle cx="320" cy="110" r="4" fill="#3DDC84"/>
+  <circle cx="520" cy="110" r="4" fill="#3DDC84"/>
+  <circle cx="720" cy="110" r="4" fill="#3DDC84"/>
+  <circle cx="920" cy="110" r="4" fill="#3DDC84"/>
+
+  <text x="1100" y="178" text-anchor="middle" font-family="Helvetica, Arial, sans-serif" font-size="11" fill="#94A3B8" font-style="italic">continuously re-checking itself</text>
+</svg>
